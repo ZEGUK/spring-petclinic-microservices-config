@@ -35,19 +35,7 @@ management.endpoints.web.exposure.include: "*"
 spring.cloud.refresh.refreshable: false
 
 # Logging
-#logging.level.org.springframework: INFO
-logging:
-  level:
-    org:
-      springframework: info
-      hibernate:
-        type:
-          descriptor:
-            sql: debug
-    io:
-      netty:
-        resolver:
-          dns: info
+logging.level.org.springframework: INFO
 
 # Metrics
 management:
@@ -59,7 +47,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
   metrics:
     export:
       prometheus:
@@ -70,7 +58,7 @@ management:
 spring:
   config:
     activate:
-      on-profile: chaos-monkey      
+      on-profile: chaos-monkey
 management.endpoint.chaosmonkey.enabled: true
 chaos:
   monkey:
@@ -87,54 +75,12 @@ spring:
   config:
     activate:
       on-profile: mysql
+  sql.init.mode: always
+  sql.init.platform: mysql
   datasource:
     schema: classpath*:db/mysql/schema.sql
     data: classpath*:db/mysql/data.sql
-    url: <your mysql connection string>
-    username: <your mysql user name>
-    password: <secret-name:spring-datasource-password>
+    url: jdbc:mysql://localhost:3306/petclinic?useSSL=false
+    username: root
+    password: petclinic
     initialization-mode: ALWAYS
-  jpa:
-    show-sql: false
-    hibernate:
-      ddl-auto: none
-    properties:
-      javax:
-        persistence:
-          sharedCache: 
-            mode: ENABLE_SELECTIVE 
-      hibernate:
-        show_sql: false
-        format_sql: false
-        generate_statistics: true
-        cache:
-          use_second_level_cache: true
-          use_query_cache: true
-          region:
-            factory_class: org.redisson.hibernate.RedissonRegionFactory
-          redisson:
-            fallback: true
-            file: classpath:redisson.json
-      redis:
-        expiryInSeconds:
-          default: 120
-          hibernate:
-            common: 0
-            account: 1200
-  cloud:
-    azure:
-      eventhub:
-        connection-string: <your event hub connection string>
-        checkpoint-storage-account: <your storage account name for checkpoint>
-        checkpoint-access-key: <your storage account access key for checkpoint>
-        checkpoint-container: <your blob container name for checkpoint>
-        namespace: <your event hub namespace>
-    stream:
-      function:
-        definition: consume;supply
-      bindings:
-        consume-in-0:
-          destination: <your event hub name>
-          group: $Default
-        supply-out-0:
-          destination: <your event hub name>
